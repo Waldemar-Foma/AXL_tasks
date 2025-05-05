@@ -1,0 +1,56 @@
+:root {
+    /* Цветовая схема */
+    --primary-color: #FF6B00;
+    --primary-hover: #FF8C00;
+    --primary-light: rgba(255, 107, 0, 0.2);
+    
+    /* Фоны */
+    --bg-color: #121212;
+    --card-bg: #1E1E1E;
+    --input-bg: #2D2D2D;
+    --table-header-bg: #252525;
+    
+    /* Текст */
+    --text-color: #E0E0E0;
+    --text-muted: #AAAAAA;
+    --text-on-primary: #FFFFFF;
+    
+    /* Границы */
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-color-light: rgba(255, 255, 255, 0.05);
+    
+    /* Тени */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.5);
+    --shadow-primary: 0 4px 12px rgba(255, 107, 0, 0.3);
+    
+    /* Статусы */
+    --status-open: rgba(255, 107, 0, 0.2);
+    --status-in-progress: rgba(33, 150, 243, 0.2);
+    --status-completed: rgba(46, 125, 50, 0.2);
+    --status-overdue: #FF5252;
+}
+
+/* Специфичные стили для темной темы */
+.card, .auth-card, .project-card {
+    border: 1px solid var(--border-color-light);
+}
+
+.form-control {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+.table th {
+    background-color: var(--table-header-bg);
+}
+
+/* Особые элементы для темной темы */
+a {
+    color: var(--primary-hover);
+}
+
+a:hover {
+    color: #FF9E3F;
+}

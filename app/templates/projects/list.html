@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="header-with-action">
+        <h1>Проекты</h1>
+        {% if current_user.is_admin %}
+            <a href="{{ url_for('projects.create_project') }}" class="btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 5v14M5 12h14"></path>
+                </svg>
+                Создать проект
+            </a>
+        {% endif %}
+    </div>
+    
+    <div class="projects-grid">
+        {% for project in projects %}
+            <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="project-card">
+                {% if project.cover_image %}
+                    <img src="{{ url_for('static', filename='uploads/projects/' + project.cover_image) }}" 
+                         alt="{{ project.title }}" class="project-cover">
+                {% else %}
+                    <div class="project-cover-placeholder"></div>
+                {% endif %}
+                <div class="project-content">
+                    <h2 class="project-title">{{ project.title }}</h2>
+                    <p class="project-description">{{ project.description|truncate(100) }}</p>
+                    <div class="project-meta">
+                        <span class="project-date">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M3 9h18V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"></path>
+                                <path d="M16 2v4"></path>
+                                <path d="M8 2v4"></path>
+                                <path d="M3 15h12"></path>
+                            </svg>
+                            {{ project.updated_at.strftime('%d.%m.%Y') }}
+                        </span>
+                        {% if project.project_url %}
+                            <span class="project-link">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                </svg>
+                                Ссылка
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

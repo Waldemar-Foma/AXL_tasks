@@ -1,0 +1,88 @@
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Статус</th>
+                <th>Приоритет</th>
+                <th>Исполнитель</th>
+                <th>Дедлайн</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in project.tasks %}
+                <tr>
+                    <td>
+                        <strong>{{ task.title }}</strong>
+                        {% if task.description %}
+                            <p class="task-description">{{ task.description|truncate(50) }}</p>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="task-status task-{{ task.status }}">
+                            {% if task.status == 'open' %}Открыта
+                            {% elif task.status == 'in_progress' %}В работе
+                            {% elif task.status == 'completed' %}Завершена{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="task-priority task-{{ task.priority }}">
+                            {% if task.priority == 'low' %}
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M3 12h18M3 6h18M3 18h18"></path>
+                                </svg>
+                                Низкий
+                            {% elif task.priority == 'medium' %}
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M3 12h18M3 6h6M3 18h6"></path>
+                                </svg>
+                                Средний
+                            {% elif task.priority == 'high' %}
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M3 12h18M3 6h12M3 18h12"></path>
+                                </svg>
+                                Высокий
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        {% if task.assignee %}
+                            <div class="user-badge">
+                                <span class="user-avatar">{{ task.assignee.username|first|upper }}</span>
+                                {{ task.assignee.username }}
+                            </div>
+                        {% else %}
+                            Не назначен
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if task.deadline %}
+                            <div class="deadline-cell">
+                                {{ task.deadline.strftime('%d.%m.%Y') }}
+                                {% if task.deadline < datetime.utcnow().date() and task.status != 'completed' %}
+                                    <span class="task-overdue">Просрочено</span>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            Нет дедлайна
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if task.assignee_id == current_user.id or current_user.is_admin %}
+                            {% if task.status != 'completed' %}
+                                <a href="{{ url_for('tasks.complete_task', task_id=task.id) }}" 
+                                   class="btn btn-sm">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M20 6L9 17l-5-5"></path>
+                                    </svg>
+                                    Завершить
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

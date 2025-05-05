@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="task-create-wrapper">
+    <div class="task-create-container">
+        <div class="task-create-card">
+            <div class="task-create-header">
+                <div class="header-content">
+                    <h2 class="task-create-title">
+                        <svg class="task-icon" viewBox="0 0 24 24" width="28" height="28">
+                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Новая задача
+                    </h2>
+                    <div class="project-info">
+                        <span class="project-label">Проект:</span>
+                        <span class="project-name" style="color: {{ project.color|default('var(--primary-color)') }};">
+                            {{ project.title|truncate(20) }}
+                        </span>
+                    </div>
+                </div>
+                <div class="progress-steps">
+                    <div class="step active">1</div>
+                    <div class="step">2</div>
+                    <div class="step">3</div>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('tasks.create_task', project_id=project.id) }}" class="task-create-form">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <svg viewBox="0 0 24 24" width="20" height="20" class="section-icon">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8"></path>
+                            <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"></path>
+                        </svg>
+                        Основная информация
+                    </h3>
+                    
+                    <div class="form-floating">
+                        {{ form.title(class="form-input", placeholder=" ", id="task-title") }}
+                        <label for="task-title">{{ form.title.label.text }}</label>
+                        {% for error in form.title.errors %}
+                            <div class="form-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-floating">
+                        {{ form.description(class="form-input textarea", placeholder=" ", id="task-desc", rows="4") }}
+                        <label for="task-desc">{{ form.description.label.text }}</label>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <svg viewBox="0 0 24 24" width="20" height="20" class="section-icon">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Детали задачи
+                    </h3>
+                    
+                    <div class="form-grid">
+                        <!-- Статус -->
+                        <div class="form-floating">
+                            {{ form.status(class="form-select", id="task-status") }}
+                            <label for="task-status">{{ form.status.label.text }}</label>
+                            <svg class="select-icon" viewBox="0 0 24 24" width="16" height="16">
+                                <path d="M6 9l6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        
+                        <!-- Приоритет -->
+                        <div class="form-floating">
+                            {{ form.priority(class="form-select", id="task-priority") }}
+                            <label for="task-priority">{{ form.priority.label.text }}</label>
+                            <svg class="select-icon" viewBox="0 0 24 24" width="16" height="16">
+                                <path d="M6 9l6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        
+                        <!-- Дедлайн -->
+                        <div class="form-floating">
+                            {{ form.deadline(class="form-input date-input", placeholder=" ", id="task-deadline") }}
+                            <label for="task-deadline">{{ form.deadline.label.text }}</label>
+                            <svg class="date-icon" viewBox="0 0 24 24" width="16" height="16">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+                        
+                        <!-- Исполнитель -->
+                        <div class="form-floating">
+                            {{ form.assignee_id(class="form-select", id="task-assignee") }}
+                            <label for="task-assignee">{{ form.assignee_id.label.text }}</label>
+                            <svg class="select-icon" viewBox="0 0 24 24" width="16" height="16">
+                                <path d="M6 9l6 6 6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn primary-btn">
+                        <svg viewBox="0 0 24 24" width="18" height="18">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                        Создать задачу
+                    </button>
+                    <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="btn secondary-btn">
+                        <svg viewBox="0 0 24 24" width="18" height="18">
+                            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                        Отмена
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

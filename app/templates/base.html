@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="{{ 'dark' if theme == 'dark.css' else 'light' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AXL TASKS{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="{{ url_for('static', filename='fonts/Deledda_Open/stylesheet.css') }}" rel="stylesheet">
+</head>
+<body class="{{ 'dark-theme' if theme == 'dark.css' else 'light-theme' }}">
+    <header>
+        <div class="container">
+            <a href="{{ url_for('projects.list_projects') }}" class="logo">AXL TASKS</a>
+            <nav>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('projects.list_projects') }}">Проекты</a>
+                    <a href="{{ url_for('auth.logout') }}">Выйти</a>
+                    <span class="user-greeting">Привет, {{ current_user.username }}!</span>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}">Войти</a>
+                    <a href="{{ url_for('auth.register') }}">Регистрация</a>
+                {% endif %}
+                <label class="theme-switch">
+                    <input type="checkbox" id="theme-toggle" {{ 'checked' if theme == 'dark.css' }}>
+                    <span class="slider round"></span>
+                    <span class="icons">
+                        <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </span>
+                </label>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>AXL TASKS &copy; {{ now.year }}</p>
+        </div>
+    </footer>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Инициализация календаря
+            flatpickr('.date-input', {
+                dateFormat: 'd.m.Y',
+                locale: 'ru',
+                minDate: 'today',
+                allowInput: true
+            });
+        
+            // Анимация при фокусе
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.addEventListener('focus', function () {
+                    this.parentElement.classList.add('focused');
+                });
+        
+                input.addEventListener('blur', function () {
+                    if (!this.value) {
+                        this.parentElement.classList.remove('focused');
+                    }
+                });
+            });
+        
+            // Получение куки по имени
+            function getCookie(name) {
+                const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                return match ? match[2] : null;
+            }
+        
+            // Применение темы
+            function applyTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                document.body.className = theme === 'dark' ? 'dark-theme' : 'light-theme';
+                document.cookie = `theme=${theme}; path=/; max-age=31536000`; // сохраняем куку на год
+                if (themeToggle) {
+                    themeToggle.checked = theme === 'dark';
+                }
+            }
+        
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('change', function () {
+                    const newTheme = this.checked ? 'dark' : 'light';
+                    applyTheme(newTheme);
+                });
+            }
+        
+            // Применяем тему при загрузке
+            const savedTheme = getCookie('theme') || 'light';
+            applyTheme(savedTheme);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <article class="project-detail">
+        <div class="project-cover-container detail-view">
+            {% if project.cover_image %}
+                <img src="{{ url_for('static', filename='uploads/projects/' + project.cover_image) }}" 
+                     alt="{{ project.title }}" 
+                     class="project-cover"
+                     loading="lazy">
+            {% else %}
+                <div class="project-cover-placeholder">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="project-header">
+            <h1>{{ project.title }}</h1>
+            <p class="project-description">{{ project.description }}</p>
+            
+            <div class="project-actions">
+                {% if project.project_url %}
+                    <a href="{{ project.project_url }}" target="_blank" class="btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        Перейти к проекту
+                    </a>
+                {% endif %}
+                {% if current_user.is_admin %}
+                    <a href="{{ url_for('projects.add_document', project_id=project.id) }}" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        Добавить документ
+                    </a>
+                    <a href="{{ url_for('tasks.create_task', project_id=project.id) }}" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        Добавить задачу
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="project-sections">
+            <section class="project-section">
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    Документы
+                </h2>
+                {% if project.documents %}
+                    <ul class="documents-list">
+                        {% for doc in project.documents %}
+                            <li>
+                                <a href="{% if doc.file_path %}{{ url_for('static', filename='uploads/documents/' + doc.file_path) }}{% else %}{{ doc.url }}{% endif %}" 
+                                   {% if not doc.file_path %}target="_blank"{% endif %}
+                                   download="{{ doc.name }}"
+                                   class="document-link">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                    {{ doc.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="empty-state">Нет документов</p>
+                {% endif %}
+            </section>
+            
+            <section class="project-section">
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+                        <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+                    </svg>
+                    Задачи
+                </h2>
+                {% include 'tasks/list.html' %}
+            </section>
+        </div>
+    </article>
+</div>
+{% endblock %}
